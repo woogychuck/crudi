@@ -26,14 +26,16 @@ DomainField.prototype.buildValidator = function buildDomainFieldValidator(){
             break;
         default :
             this.validator = Joi.string();
+            if(!this.required){
+                this.validator.allow('');
+            }
             break;
     };
 
     if(this.required){
         this.validator.required();
-    }else if(this.type == 'string'){
-        console.log('ALLOWING EMPTY');
-        this.validator.allow('');
+    }else{
+        this.validator.optional();
     };
 
     if(this.description){
