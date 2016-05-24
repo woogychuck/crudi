@@ -3,7 +3,7 @@ var Joi = require('joi');
 function DomainField(options){
     this.name = options.name;
     this.type = options.type || 'string';
-    this.required = options.requried || true;
+    this.required = options.required || true;
     this.description = options.description;
     this.validator = null;
     this.buildValidator();
