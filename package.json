@@ -1,0 +1,10 @@
+{
+  "name": "crudi",
+  "version": "0.0.1",
+  "dependencies": {
+    "joi": "^8.0.5",
+    "mongodb": "^2.1.14",
+    "pluralize": "^1.2.1",
+    "q": "^1.4.1"
+  }
+}
