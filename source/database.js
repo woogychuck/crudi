@@ -25,7 +25,6 @@ connectionString = utilities.format('mongodb://%s:%d/%s', config.db.host, config
 
     var deferral = q.defer();
     if (_db === null) {
-        console.log(connectionString);
         mongodb.MongoClient.connect(connectionString, dbOptions, function connectMongoClient(error, db) {
             _db = db;
             if (error) {

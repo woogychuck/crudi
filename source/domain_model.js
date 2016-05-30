@@ -13,11 +13,13 @@ function DomainModel(options){
     }
 
     this.fields = {};
+    this.validator = null;
+
     if(options.fields){
         this.buildFieldsFromArray(options.fields);
         this.buildValidator();
     }
-    this.validator = null;
+
 };
 
 DomainModel.build = function buildDomainModel(options){
@@ -26,11 +28,11 @@ DomainModel.build = function buildDomainModel(options){
 
 DomainModel.prototype.addField = function addDomainModelField(domainField, rebuildValidator){
     if(typeof domainField == 'string'){
-        domainField = DomainField.build({name: domainField});
+        domainField = DomainField.build({name: domainField}, rebuildValidator);
     }
 
     if(!(domainField instanceof DomainField)){
-        domainField = DomainField.build(domainField);
+        domainField = DomainField.build(domainField, rebuildValidator);
     }
 
     this.fields[domainField.name] = domainField;
@@ -39,17 +41,20 @@ DomainModel.prototype.addField = function addDomainModelField(domainField, rebui
     }
 };
 
-DomainModel.prototype.buildValidator = function buildDomainValidator(method){
+DomainModel.prototype.buildValidator = function buildDomainValidator(){
     var validationRules = {};
 
     for(var fieldName in this.fields){
-        validationRules[fieldName] = this.fields[fieldName].buildValidator();
+        if(!this.fields[fieldName].validator){
+            this.fields[fieldName].buildValidator();
+        }
+        validationRules[fieldName] = this.fields[fieldName].validator;
     }
 
     this.validator = Joi.object(validationRules);
     if(!this.strict){
         this.validator.unknown();
-    }
+    };
 
     return this.validator;
 };

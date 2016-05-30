@@ -15,6 +15,7 @@ function ServiceBuilder(domainModel, options){
 }
 
 ServiceBuilder.prototype.generateRoutes = function(){
+
     var me = this;
     //Generate Get All Route
     var getAllRoute = {
@@ -61,7 +62,6 @@ ServiceBuilder.prototype.generateRoutes = function(){
     this.routes.push(getByIdRoute);
 
     //Generate Post Route
-    var createPayload = this.domainModel.buildValidator('post');
     var postRoute = {
         method: 'POST',
         path: '/' + this.domainModel.pluralName,
@@ -74,13 +74,11 @@ ServiceBuilder.prototype.generateRoutes = function(){
                     function(newItem){
                         reply(newItem);
                     }, function(err){
-                        console.log('ERORORRO');
-                        console.log(err);
                         reply(err);
                     });
             }.bind(me),
             validate: {
-                payload: createPayload
+                payload: this.domainModel.validator
             }
         }
     }
@@ -88,7 +86,6 @@ ServiceBuilder.prototype.generateRoutes = function(){
 
     //Generate Put Route
 
-    var updatePayload = this.domainModel.buildValidator('put');
     var putRoute = {
         method: 'PUT',
         path: '/' + this.domainModel.pluralName + '/{' + this.domainModel.name + 'Id}',
@@ -106,7 +103,7 @@ ServiceBuilder.prototype.generateRoutes = function(){
             }.bind(me),
             validate: {
                 params: getByIdParams,
-                payload: updatePayload
+                payload: this.domainModel.validator
             }
         }
     };
