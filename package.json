@@ -1,6 +1,6 @@
 {
   "name": "crudi",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "dependencies": {
     "joi": "^8.0.5",
     "mongodb": "^2.1.14",
