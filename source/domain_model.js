@@ -53,7 +53,7 @@ DomainModel.prototype.buildValidator = function buildDomainValidator(){
 
     this.validator = Joi.object(validationRules);
     if(!this.strict){
-        this.validator.unknown();
+        this.validator = this.validator.unknown();
     };
 
     return this.validator;
