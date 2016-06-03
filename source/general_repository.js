@@ -25,6 +25,7 @@ function prepQuery(query){
             query[queryTerm] = buildObjectIdFromString(query[queryTerm]);
         }
     }
+    return query;
 }
 
 function GeneralRepository(entityName){
