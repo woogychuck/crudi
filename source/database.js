@@ -36,6 +36,8 @@ if(process.env.MONGO_URI){
         mongodb.MongoClient.connect(connectionString, dbOptions, function connectMongoClient(error, db) {
             _db = db;
             if (error) {
+                console.log('DB CONNECTION ERROR');
+                console.log(error);
                 return deferral.reject(error);
             } else {
                 return deferral.resolve(_db);
