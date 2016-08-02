@@ -11,6 +11,8 @@ module.exports = {
         });
     },
     Config: function(settings){
+        console.log('CONFIGURING WITH THE FOLLOWING SETTINGS');
+        console.log(settings);
         if(settings.db){
             if(settings.db.host){
                 config.db.host = settings.db.host;
@@ -27,6 +29,7 @@ module.exports = {
             if(settings.db.pass){
                 config.db.pass = settings.db.pass;
             }
-        }
+        };
+        console.log(settings.db);
     }
 }

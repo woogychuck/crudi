@@ -19,6 +19,7 @@ var mongodb = require('mongodb'),
 
 module.exports = database;
 
+
 if(process.env.MONGO_URI){
     connectionString = process.env.MONGO_URI;
 } else {
