@@ -37,6 +37,7 @@ if(process.env.MONGO_URI){
             _db = db;
             if (error) {
                 console.log('DB CONNECTION ERROR');
+                console.log('USING CONNECTION STRING: ' + connectionString);
                 console.log(error);
                 return deferral.reject(error);
             } else {
