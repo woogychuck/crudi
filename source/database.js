@@ -20,20 +20,21 @@ var mongodb = require('mongodb'),
 module.exports = database;
 
 
-if(process.env.MONGO_URI){
-    connectionString = process.env.MONGO_URI;
-} else {
-    if (config.db.user) {
-        connectionString = utilities.format('mongodb://%s:%s@%s:%d/%s', config.db.user, config.db.pass, config.db.host, config.db.port, config.db.database);
-    } else {
-        connectionString = utilities.format('mongodb://%s:%d/%s', config.db.host, config.db.port, config.db.database);
-    }
-}
+
 
  database.getDb = function getDb() {
-
     var deferral = q.defer();
     if (_db === null) {
+        if(process.env.MONGO_URI){
+            connectionString = process.env.MONGO_URI;
+        } else {
+            if (config.db.user) {
+                connectionString = utilities.format('mongodb://%s:%s@%s:%d/%s', config.db.user, encodeURIComponent(config.db.pass), config.db.host, config.db.port, config.db.database);
+            } else {
+                connectionString = utilities.format('mongodb://%s:%d/%s', config.db.host, config.db.port, config.db.database);
+            }
+        }
+
         mongodb.MongoClient.connect(connectionString, dbOptions, function connectMongoClient(error, db) {
             _db = db;
             if (error) {
