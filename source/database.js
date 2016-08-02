@@ -19,7 +19,15 @@ var mongodb = require('mongodb'),
 
 module.exports = database;
 
-connectionString = utilities.format('mongodb://%s:%d/%s', config.db.host, config.db.port, config.db.database);
+if(process.env.MONGO_URI){
+    connectionString = process.env.MONGO_URI;
+} else {
+    if (config.db.user) {
+        connectionString = utilities.format('mongodb://%s:%s@%s:%d/%s', config.db.user, config.db.pass, config.db.host, config.db.port, config.db.database);
+    } else {
+        connectionString = utilities.format('mongodb://%s:%d/%s', config.db.host, config.db.port, config.db.database);
+    }
+}
 
  database.getDb = function getDb() {
 

@@ -2,7 +2,7 @@
 
 var proxyquire = require('proxyquire').noCallThru().preserveCache();
 
-fdescribe('MongoDB Database wrapper', function describeMongoDBdatabase(){
+describe('MongoDB Database wrapper', function describeMongoDBdatabase(){
 
     var mongodb,
         db,
@@ -36,9 +36,11 @@ fdescribe('MongoDB Database wrapper', function describeMongoDBdatabase(){
 
     beforeEach(function beforeEachMongoDatabaseTest(){
         fakeConfig = {
-            host: 'lumiere',
-            port: '42',
-            database: 'yep. dat a base!'
+            db: {
+                host: 'lumiere',
+                port: '42',
+                database: 'yep. dat a base!'
+            }
         };
 
         db = proxyquire('./database', {

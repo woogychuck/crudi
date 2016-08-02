@@ -6,7 +6,6 @@ function DomainField(options, buildValidator){
     this.required = (typeof options.required === 'boolean') ? options.required : true;
     this.description = options.description;
     this.validator = null;
-    this.validatorText = '';
     if(buildValidator) {
         this.buildValidator();
     }

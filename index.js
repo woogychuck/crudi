@@ -21,6 +21,12 @@ module.exports = {
             if(settings.db.database){
                 config.db.database = settings.db.database;
             }
+            if(settings.db.user){
+                config.db.user = settings.db.user;
+            }
+            if(settings.db.pass){
+                config.db.pass = settings.db.pass;
+            }
         }
     }
 }

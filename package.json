@@ -1,10 +1,19 @@
 {
   "name": "crudi",
   "version": "0.0.8",
+  "scripts": {
+    "test": "./node_modules/.bin/istanbul cover -x 'spec/**' -x '*_spec.js' ./spec/runner.js"
+  },
   "dependencies": {
     "joi": "^8.0.5",
     "mongodb": "^2.1.14",
     "pluralize": "^1.2.1",
     "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.3",
+    "jasmine": "^2.4.1",
+    "jasmine-reporters": "^2.1.1",
+    "proxyquire": "^1.7.9"
   }
 }
