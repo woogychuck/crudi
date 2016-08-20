@@ -25,8 +25,10 @@ module.exports = database;
  database.getDb = function getDb() {
     var deferral = q.defer();
     if (_db === null) {
-        if(process.env.MONGO_URI){
-            connectionString = process.env.MONGO_URI;
+        if(process.env.MONGO_URL) {
+            connectionString = process.env.MONGO_URL;
+        }else if(config.db.connnectionString){
+            connectionString = config.db.connectionString;
         } else {
             if (config.db.user) {
                 connectionString = utilities.format('mongodb://%s:%s@%s:%d/%s', config.db.user, encodeURIComponent(config.db.pass), config.db.host, config.db.port, config.db.database);
