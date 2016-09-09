@@ -15,9 +15,7 @@ module.exports = database;
  database.getDb = function getDb() {
     var deferral = q.defer();
     if (_db === null) {
-        if(process.env.MONGO_URL) {
-            connectionString = process.env.MONGO_URL;
-        }else if(config.db.connnectionString){
+        if(config.db.connnectionString){
             connectionString = config.db.connectionString;
         } else {
             if (config.db.user) {
