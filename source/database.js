@@ -6,12 +6,7 @@ var mongodb = require('mongodb'),
     utilities = require('util'),
     connectionString,
     database = {},
-    _db = null,
-    dbOptions = {
-        db:{
-            bufferMaxEntries: 0
-        }
-    };
+    _db = null;
 
 
 module.exports = database;
@@ -32,7 +27,7 @@ module.exports = database;
             }
         }
 
-        mongodb.MongoClient.connect(connectionString, dbOptions, function connectMongoClient(error, db) {
+        mongodb.MongoClient.connect(connectionString, function connectMongoClient(error, db) {
             _db = db;
             if (error) {
                 console.log('DB CONNECTION ERROR');
