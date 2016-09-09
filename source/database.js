@@ -9,17 +9,12 @@ var mongodb = require('mongodb'),
     _db = null,
     dbOptions = {
         db:{
-            // bufferMaxEntries is the Max Number of operations buffered while waiting for server reconnect.
-            // Set to zero so that if connection is interrupted db requests will error out until successful reconnect.
-            // *note: autoReconnect is set to true by default so MongoDB Driver will attempt to reconnect automatically.
             bufferMaxEntries: 0
         }
     };
 
 
 module.exports = database;
-
-
 
 
  database.getDb = function getDb() {

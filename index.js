@@ -11,8 +11,6 @@ module.exports = {
         });
     },
     Config: function(settings){
-        console.log('CONFIGURING WITH THE FOLLOWING SETTINGS');
-        console.log(settings);
         if(settings.db){
             if(settings.db.host){
                 config.db.host = settings.db.host;
