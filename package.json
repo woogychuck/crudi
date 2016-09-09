@@ -1,6 +1,6 @@
 {
   "name": "crudi",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "scripts": {
     "test": "./node_modules/.bin/istanbul cover -x 'spec/**' -x '*_spec.js' ./spec/runner.js"
   },
