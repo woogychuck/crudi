@@ -12,6 +12,9 @@ module.exports = {
     },
     Config: function(settings){
         if(settings.db){
+            if(settings.db.connectionString){
+                config.db.connectionString = settings.db.connectionString;
+            }
             if(settings.db.host){
                 config.db.host = settings.db.host;
             }
