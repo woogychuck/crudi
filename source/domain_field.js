@@ -26,6 +26,9 @@ DomainField.prototype.buildValidator = function buildDomainFieldValidator(){
         case 'number':
             this.validator = Joi.number();
             break;
+        case 'boolean':
+            this.validator = Joi.boolean();
+            break;
         default :
             this.validator = Joi.string();
             if(!this.required){
