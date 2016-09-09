@@ -15,7 +15,7 @@ module.exports = database;
  database.getDb = function getDb() {
     var deferral = q.defer();
     if (_db === null) {
-        if(config.db.connnectionString){
+        if(config.db.connectionString){
             connectionString = config.db.connectionString;
         } else {
             if (config.db.user) {
