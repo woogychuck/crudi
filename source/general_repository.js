@@ -14,7 +14,7 @@ function buildObjectIdFromString(id){
     try {
         objectId = new ObjectId(id);
     } catch(e){
-        throw new Error("BAD REQUEST");
+        throw new Error("BAD REQUEST", e);
     }
     return objectId;
 }
@@ -51,19 +51,31 @@ function GeneralRepository(entityName){
         });
     };
 
-    this.update = function update(id, document){
-        var objectId = buildObjectIdFromString(id);
+    this.update = function update(findQuery, document){
+
+        //Convert Ids
+        for(var field in findQuery){
+            if(field.indexOf('_id') > -1){
+                findQuery[field] = buildObjectIdFromString(findQuery[field]);
+            }
+        }
+
 
         return db.getDb().then(function updateDocument(db){
-            db.collection(entityName).updateOne({"_id":objectId},document);
+            db.collection(entityName).updateOne(findQuery,document);
         });
     }
 
-    this.delete = function deleteItem(id){
-        var objectId = buildObjectIdFromString(id);
+    this.delete = function deleteItem(findQuery){
+        //Convert Ids
+        for(var field in findQuery){
+            if(field.indexOf('_id') > -1){
+                findQuery[field] = buildObjectIdFromString(findQuery[field]);
+            }
+        }
 
         return db.getDb().then(function deleteItem(db){
-            return db.collection(entityName).deleteOne({_id: objectId});
+            return db.collection(entityName).deleteOne(findQuery);
         });
     };
 }

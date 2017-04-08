@@ -1,5 +1,6 @@
 var Joi = require('joi'),
-    GeneralRepository = require('./general_repository');
+    GeneralRepository = require('./general_repository'),
+    RouteFactory = require('./route_factory');
 
 function ServiceBuilder(domainModel, options){
     this.domainModel = domainModel;
@@ -9,6 +10,9 @@ function ServiceBuilder(domainModel, options){
     //Configure repository
     this.repository = new GeneralRepository(this.domainModel.name);
 
+    //Configure route factory
+    this.routeFactory = new RouteFactory(this.domainModel, this.repository);
+
     //Generate Routes
     this.generateRoutes();
 
@@ -17,145 +21,69 @@ function ServiceBuilder(domainModel, options){
 ServiceBuilder.prototype.generateRoutes = function(){
 
     var me = this;
-    //Generate Get All Route
-    var getAllRoute = {
-        method: 'GET',
-        path: '/' + this.domainModel.pluralName,
-        config: {
-            description: 'Gets an array of all ' + this.domainModel.pluralName,
-            notes: 'Coming Soon',
-            tags: ['api',this.domainModel.name],
-            handler: function (request, reply) {
-                this.repository.getAll().then(function (items) {
-                    reply(items);
-                }, function (err) {
-                    reply(err);
-                })
-            }.bind(me)
-        }
-    };
+    var getByIdParams = {};
+    getByIdParams[me.domainModel.name + 'Id'] = Joi.string().required();
+
+    var getAllOptions = {repositoryAction:'getAll', path:''};
+    var getAllRoute = me.routeFactory.buildRoute(getAllOptions);
     this.routes.push(getAllRoute);
 
     //Generate Get By Id Route
-    var getByIdParams = {};
-    getByIdParams[this.domainModel.name + 'Id'] = Joi.string().required();
-    var getByIdRoute = {
-        method: 'GET',
-        path: '/' + this.domainModel.pluralName + '/{' + this.domainModel.name + 'Id}',
-        config: {
-            description: 'Gets a single ' + this.domainModel.name + " identified by id",
-            notes: 'Coming Soon',
-            tags: ['api',this.domainModel.name],
-            handler: function(request, reply) {
-                this.repository.getOne({_id:request.params[this.domainModel.name + 'Id']}).then(
-                    function(item){
-                        reply(item);
-                    }, function(err){
-                        reply(err)
-                    });
-            }.bind(me),
-            validate: {
-                params: getByIdParams
-            }
-        }
-    }
-    this.routes.push(getByIdRoute);
+    var getByIdOptions = {
+        repositoryAction: 'getOne',
+        path: '/{' + me.domainModel.name + 'Id}',
+        description: 'Gets a single ' + me.domainModel.name + ' identified by id',
+        reqParams: ["_id:??" + me.domainModel.name + 'Id'],
+        validation: {params:getByIdParams}
+    };
+    this.routes.push(me.routeFactory.buildRoute(getByIdOptions));
 
-    //Generate Post Route
-    var postRoute = {
+    //Generate POST Route
+    var postOptions = {
+        repositoryAction: 'create',
         method: 'POST',
-        path: '/' + this.domainModel.pluralName,
-        config:{
-            description: 'Creates a new ' + this.domainModel.name,
-            notes: 'Coming Soon',
-            tags: ['api',this.domainModel.name],
-            handler: function(request, reply){
-                this.repository.create(request.payload).then(
-                    function(newItem){
-                        reply(newItem);
-                    }, function(err){
-                        reply(err);
-                    });
-            }.bind(me),
-            validate: {
-                payload: this.domainModel.validator
-            }
+        description: 'Creates a new ' + this.domainModel.name,
+        validation: {
+            payload: me.domainModel.validator
         }
     }
-    this.routes.push(postRoute);
+    this.routes.push(me.routeFactory.buildRoute(postOptions));
 
     //Generate Put Route
-
-    var putRoute = {
+    var putOptions = {
+        repositoryAction: 'update',
+        path: '/{' + me.domainModel.name + 'Id}',
         method: 'PUT',
-        path: '/' + this.domainModel.pluralName + '/{' + this.domainModel.name + 'Id}',
-        config: {
-            description: 'Updates a ' + this.domainModel.name + ' document identified by ' + this.domainModel.name + 'Id',
-            notes: 'Coming Soon',
-            tags: ['api',this.domainModel.name],
-            handler: function(request, reply){
-                this.repository.update(request.params[this.domainModel.name + 'Id'], request.payload).then(
-                    function(result){
-                        reply(result);
-                    }, function(err){
-                        reply(err);
-                    });
-            }.bind(me),
-            validate: {
-                params: getByIdParams,
-                payload: this.domainModel.validator
-            }
-        }
-    };
-    this.routes.push(putRoute);
-
-    var deleteRoute = {
-        method: 'DELETE',
-        path: '/' + this.domainModel.pluralName + '/{' + this.domainModel.name + 'Id}',
-        config: {
-            description: 'Deletes a ' + this.domainModel.name + ' document identified by ' + this.domainModel.name + 'Id',
-            notes: 'Coming Soon',
-            tags: ['api',this.domainModel.name],
-            handler: function(request, reply){
-                this.repository.delete(request.params[this.domainModel.name + 'Id']).then(
-                    function(result){
-                        reply(result);
-                    }, function(err){
-                        reply(err);
-                    });
-            }.bind(me),
-            validate: {
-                params: getByIdParams
-            }
-        }
-    };
-    this.routes.push(deleteRoute)
-
-    var searchRoute = {
-        method: 'POST',
-        path: '/' + this.domainModel.pluralName  + '/search',
-        config: {
-            description: 'Executes a search',
-            notes: 'Returns an array of documents that matches the provided search query object',
-            tags: ['api',this.domainModel.name],
-            handler: function(request, reply){
-                this.repository.findAll(request.payload.query).then(
-                    function(result){
-                        reply(result);
-                    }, function(err){
-                        reply(err);
-                    });
-            }.bind(me),
-            validate: {
-                payload: {
-                    'query': Joi.object().unknown()
-                }
-            }
+        description: 'Updates a/an ' + this.domainModel.name,
+        reqParams: ["_id:??" + me.domainModel.name + 'Id'],
+        validation: {
+            params: getByIdParams,
+            payload: me.domainModel.validator
         }
     }
+    this.routes.push(me.routeFactory.buildRoute(putOptions));
+
+    //Generate Delete Route
+    var deleteOptions = {
+        repositoryAction: 'delete',
+        path: '/{' + me.domainModel.name + 'Id}',
+        method: 'DELETE',
+        description: 'Deletes a/an ' + this.domainModel.name,
+        reqParams: ["_id:??" + me.domainModel.name + 'Id'],
+        validation: {params:getByIdParams}
+    };
+    var deleteRoute = me.routeFactory.buildRoute(deleteOptions);
+    this.routes.push(deleteRoute);
 
     return this.routes;
 };
+
+ServiceBuilder.prototype.addCustomRoute = function(routeOptions){
+    //Validate New Route
+
+    //Add the Route
+    this.routes.push(this.routeFactory.buildRoute(routeOptions));
+}
 
 ServiceBuilder.build = function(domainModel,options){
     return new ServiceBuilder(domainModel, options);
